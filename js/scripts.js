@@ -3,7 +3,7 @@ var x = document.getElementById("alarm-player");
 
 $('#notify-btn-start').click(function () {
 	if (typeof (Storage) !== "undefined") {
-		localStorage.setItem("workTime", 1);
+		localStorage.setItem("workTime", 15);
 		localStorage.setItem("type", "coding-start");
 		if (localStorage.getItem("type") === "coding-start") {
 			if (isExists('#normal-countdown')) {
