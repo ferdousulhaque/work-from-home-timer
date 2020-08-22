@@ -1,32 +1,23 @@
 
 var x = document.getElementById("alarm-player");
+var slideIndex = 1;
 
 $('#notify-btn-start').click(function () {
-	if (typeof (Storage) !== "undefined") {
-		localStorage.setItem("workTime", 15);
-		localStorage.setItem("type", "coding-start");
-		if (localStorage.getItem("type") === "coding-start") {
-			if (isExists('#normal-countdown')) {
-				var date = moment().add(localStorage.getItem('workTime'), 'minutes').format('l LTS');
+	if (isExists('#normal-countdown')) {
+		var date = moment().add(20, 'minutes').format('l LTS');
 
-				$('#normal-countdown').show();
-				$('#notify-btn-start').hide();
-				$('#notify-btn-reset').show();
+		$('#normal-countdown').show();
+		$('#notify-btn-start').hide();
+		$('#notify-btn-reset').show();
 
-				$('#normal-countdown').countdown(date, function (event) {
-					var $this = $(this).html(event.strftime('' +
-						'<div class="time-sec"><h3 class="main-time">%M</h3> <span>Mins</span></div>' +
-						'<div class="time-sec"><h3 class="main-time">%S</h3> <span>Sec</span></div>'));
-				}).on('finish.countdown', function () {
-					breakTime();
-					
-				});
-			}
-		} else {
-
-		}
-	} else {
-		// Sorry! No Web Storage support..
+		$('#normal-countdown').countdown(date, function (event) {
+			var $this = $(this).html(event.strftime('' +
+				'<div class="time-sec"><h3 class="main-time">%M</h3> <span>Mins</span></div>' +
+				'<div class="time-sec"><h3 class="main-time">%S</h3> <span>Sec</span></div>'));
+		}).on('finish.countdown', function () {
+			breakTime();
+			
+		});
 	}
 });
 
@@ -60,3 +51,45 @@ $('#notify-btn-reset').click(function () {
 $('#notify-btn-play').click(() => {
 	document.getElementById('alarm-player').play();
 });
+
+$(document).ready(function () {
+	$.ajax({
+		url: 'https://cors-anywhere.herokuapp.com/' + 'https://www.bodybuilding.com/rss/articles/training',
+		type: 'GET',
+		dataType: "xml"
+	}).done(function (xml) {
+		$.each($("item", xml), function (i, e) {
+			var itemURL = ($(e).find("link"));
+			var itemTitle = ($(e).find("title"));
+
+			var blogTitle = '<div class="mySlides">' + itemTitle.text() + '<a target="_blank" href="' + itemURL.text()+'"><p class="author">' + itemURL.text() + "</p></a></div>";
+
+			$("#feed").append(blogTitle);
+		});
+		showSlides(slideIndex);
+	});
+});
+
+function plusSlides(n) {
+	showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+	showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+	var i;
+	var slides = document.getElementsByClassName("mySlides");
+	var dots = document.getElementsByClassName("dot");
+	if (n > slides.length) { slideIndex = 1 }
+	if (n < 1) { slideIndex = slides.length }
+	for (i = 0; i < slides.length; i++) {
+		slides[i].style.display = "none";
+	}
+	for (i = 0; i < dots.length; i++) {
+		dots[i].className = dots[i].className.replace(" active", "");
+	}
+	slides[slideIndex - 1].style.display = "block";
+	dots[slideIndex - 1].className += " active";
+}
